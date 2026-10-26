@@ -7,35 +7,23 @@ double randomMath(int x) {
 }
 
 void main() {
-  // final a = Value(2);
-  // final b = Value(-3);
-  // final c = Value(10);
+  final x1 = Value(2);
+  final x2 = Value(0);
 
-  // final e = a * b;
-  // final d = e + c;
+  final w1 = Value(-3);
+  final w2 = Value(1);
 
-  // final f = Value(-2);
+  final b = Value(6.8813735870195432);
 
-  // final L = d * f;
+  final x1w1 = x1 * w1;
+  final x2w2 = x2 * w2;
 
-  // print(L);
+  final x1w1x2w2 = x1w1 + x2w2;
 
-  var x1 = Value(2);
-  var x2 = Value(0);
+  final n = x1w1x2w2 + b;
 
-  var w1 = Value(-3);
-  var w2 = Value(1);
-
-  var b = Value(6.8813735870195432);
-
-  var x1w1 = x1 * w1;
-  var x2w2 = x2 * w2;
-
-  var x1w1x2w2 = x1w1 + x2w2;
-
-  var n = x1w1x2w2 + b;
-
-  var o = n.tanh();
+  // var o = n.tanh();
+  final o = ((n * 2).exp() - 1) / ((n * 2).exp() + 1);
 
   o.grad = 1;
   o.back();

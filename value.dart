@@ -1,7 +1,7 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 class Value(
-  final double data, {
+  final num data, {
   final List<Value> children = const [],
   final String op = '',
 }) {
@@ -13,7 +13,11 @@ class Value(
     return "Value: $data";
   }
 
-  Value operator +(Value other) {
+  Value operator +(dynamic other) {
+    if (other is! Value) {
+      other = Value(other);
+    }
+
     final out = Value(data + other.data, children: [this, other], op: '+');
     out._back = () {
       this.grad += 1 * out.grad;
@@ -22,7 +26,11 @@ class Value(
     return out;
   }
 
-  Value operator *(Value other) {
+  Value operator *(dynamic other) {
+    if (other is! Value) {
+      other = Value(other);
+    }
+
     final out = Value(data * other.data, children: [this, other], op: '*');
     out._back = () {
       this.grad += other.data * out.grad;
@@ -31,12 +39,51 @@ class Value(
     return out;
   }
 
+  Value operator /(dynamic other) {
+    if (other is! Value) {
+      other = Value(other);
+    }
+
+    return this * other.pow(-1);
+  }
+
+  Value operator -(dynamic other) {
+    if (other is! Value) {
+      other = Value(other);
+    }
+
+    return this + (other * -1);
+  }
+
+  Value operator -() {
+    return this * -1;
+  }
+
+  Value exp() {
+    final x = this.data;
+    final t = math.exp(x);
+    final out = Value(t, children: [this], op: 'exp');
+    out._back = () {
+      this.grad += t * out.grad;
+    };
+    return out;
+  }
+
+  Value pow(num n) {
+    final x = this.data;
+    final out = Value(math.pow(x, n), children: [this], op: 'pow');
+    out._back = () {
+      this.grad += n * math.pow(x, n - 1) * out.grad;
+    };
+    return out;
+  }
+
   Value tanh() {
     final x = this.data;
-    final t = (exp(2 * x) - 1) / (exp(2 * x) + 1);
+    final t = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1);
     final out = Value(t, children: [this], op: 'tanh');
     out._back = () {
-      this.grad += (1 - pow(t, 2)).toDouble() * out.grad;
+      this.grad += (1 - math.pow(t, 2)).toDouble() * out.grad;
     };
     return out;
   }
