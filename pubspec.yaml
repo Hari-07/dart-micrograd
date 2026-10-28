@@ -1,0 +1,8 @@
+name: dart_micrograd
+description: A tiny autograd engine in Dart, after Karpathy's micrograd.
+publish_to: none
+
+environment:
+  sdk: ^3.13.1
+dependencies:
+  collection: ^1.19.1

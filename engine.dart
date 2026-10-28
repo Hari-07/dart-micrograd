@@ -1,35 +1,36 @@
-import 'dart:math';
-
+import 'mlp.dart';
 import 'value.dart';
 
-double randomMath(int x) {
-  return pow(x, 3).toDouble();
-}
-
 void main() {
-  final x1 = Value(2);
-  final x2 = Value(0);
+  final n = MLP(3, [4, 4, 1]);
 
-  final w1 = Value(-3);
-  final w2 = Value(1);
+  final xs = [
+    [2.0, 3.0, -1.0],
+    [3.0, -1.0, 0.5],
+    [0.5, 1.0, 1.0],
+    [1.0, 1.0, -1.0],
+  ];
+  final ys = [1.0, -1.0, -1.0, 1.0];
 
-  final b = Value(6.8813735870195432);
+  for (int i = 0; i < 10000; i++) {
+    final List<Value> ypred = [for (final x in xs) n(x)[0]];
+    Value loss = Value(0);
+    for (var i = 0; i < ys.length; i++) {
+      final delta = ypred[i] - ys[i];
+      loss += delta.pow(2);
+    }
+    for (final param in n.parameters()) {
+      param.grad = 0;
+    }
 
-  final x1w1 = x1 * w1;
-  final x2w2 = x2 * w2;
+    loss.back();
 
-  final x1w1x2w2 = x1w1 + x2w2;
+    for (final param in n.parameters()) {
+      param.data += -0.2 * param.grad;
+    }
+  }
 
-  final n = x1w1x2w2 + b;
+  final List<Value> ypred = [for (final x in xs) n(x)[0]];
 
-  // var o = n.tanh();
-  final o = ((n * 2).exp() - 1) / ((n * 2).exp() + 1);
-
-  o.grad = 1;
-  o.back();
-
-  print(x1.grad);
-  print(w1.grad);
-  print(x2.grad);
-  print(w2.grad);
+  print(ypred);
 }

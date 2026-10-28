@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 class Value(
-  final num data, {
+  var num data, {
   final List<Value> children = const [],
   final String op = '',
 }) {
